@@ -47,13 +47,7 @@ pip install -r requirements.txt
 Run the script with an audio file:
 
 ```bash
-py main.py example.wav
-```
-
-or
-
-```bash
-python main.py example.wav
+py main.py audio.wav
 ```
 
 ## 📂 Output
@@ -61,7 +55,7 @@ python main.py example.wav
 * Example:
 
 ```
-example.wav → example.srt
+audio.wav → audio.srt
 ```
 
 ## ⚙️ How It Works
