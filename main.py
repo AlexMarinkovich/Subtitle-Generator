@@ -3,6 +3,7 @@ from pathlib import Path
 import time
 import warnings
 import logging
+import re
 
 import whisperx
 import torch
@@ -73,6 +74,33 @@ def adjust_timings(words):
     return adjusted
 
 
+def format_words(words, uppercase=False, keep_punctuation="'"):
+    """Format words by removing unwanted punctuation and applying casing."""
+    formatted = []
+
+    # Create regex pattern to remove all punctuation except allowed ones
+    allowed = re.escape(keep_punctuation)
+    pattern = rf"[^\w\s{allowed}]"
+
+    for w in words:
+        text = w["word"]
+
+        # Remove unwanted punctuation
+        text = re.sub(pattern, "", text)
+
+        # Apply uppercase if enabled
+        if uppercase:
+            text = text.upper()
+
+        formatted.append({
+            "start": w["start"],
+            "end": w["end"],
+            "word": text.strip()
+        })
+
+    return formatted
+
+
 def start_step(message):
     print(f"{message + '...':<{STEP_WIDTH}}", end="", flush=True)
 
@@ -115,6 +143,7 @@ def main(audio_path):
     start_step("Post-processing")
     words = clean_words(words)
     words = adjust_timings(words)
+    words = format_words(words)
     end_step(t)
 
     start_step("Writing SRT")
